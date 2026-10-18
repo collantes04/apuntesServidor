@@ -8,6 +8,10 @@ import com.servidor.apuntes.biblioteca.service.LibroService;
 
 import jakarta.validation.Valid;
 
+import java.util.NoSuchElementException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,38 +26,53 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RestController 
 @RequestMapping("/api/libros")
 public class LibroController {
+
+    @Autowired
     private LibroService ls;
 
-    public LibroController(LibroService ls){
-        this.ls = ls;
-    }
     //GETS
     @GetMapping()
     public ResponseEntity<?> listaLibros() {
-        return ls.getLibros();
+        try {
+            return ResponseEntity.ok(ls.getLibros());
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> listarId(@PathVariable long id) {
-        return ls.listarPorId(id);
+        try {
+            return ResponseEntity.ok(ls.listarPorId(id));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
     
     @GetMapping("/disponibles")
     public ResponseEntity<?> getDisponibles() {
-        return ls.listarDisponibles();
+        try {
+            return ResponseEntity.ok(ls.listarDisponibles());
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     //POST
 
     @PostMapping()
     public ResponseEntity<?> createLibro(@RequestBody @Valid Libro lib) {
-        return ls.addLibro(lib);
+        return ResponseEntity.ok(ls.addLibro(lib));
     }
     
     //DELETE
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteLibro(@PathVariable long id){
-        return ls.deleteLibro(id);
+        try {
+            return ResponseEntity.ok(ls.deleteLibro(id));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
     
 }
