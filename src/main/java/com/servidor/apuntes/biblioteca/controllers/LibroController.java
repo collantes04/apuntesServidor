@@ -78,7 +78,7 @@ public class LibroController {
     }
 
     @GetMapping("/status")
-    public ResponseEntity<?> getMethodName(@RequestParam String param) {
+    public ResponseEntity<?> status() {
         return ResponseEntity.ok().body("Petición realizada");
     }
     
